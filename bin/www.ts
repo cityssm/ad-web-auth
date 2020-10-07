@@ -33,15 +33,6 @@ function onError(error: Error) {
   }
 }
 
-function onListening(server: http.Server | https.Server) {
-
-  const addr = server.address();
-
-  const bind = typeof addr === "string"
-    ? "pipe " + addr
-    : "port " + addr.port.toString();
-}
-
 /**
  * Initialize HTTP
  */
@@ -56,10 +47,9 @@ if (httpPort) {
 
   httpServer.on("error", onError);
   httpServer.on("listening", function() {
-    onListening(httpServer);
+    console.log("HTTP listening on " + httpPort.toString());
   });
 
-  console.log("HTTP listening on " + httpPort.toString());
 }
 
 /**
@@ -82,9 +72,8 @@ if (httpsPort) {
   httpsServer.on("error", onError);
 
   httpsServer.on("listening", function() {
-    onListening(httpsServer);
+    console.log("HTTPS listening on " + httpsPort.toString());
   });
 
-  console.log("HTTPS listening on " + httpsPort.toString());
 
 }

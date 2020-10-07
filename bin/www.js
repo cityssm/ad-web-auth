@@ -21,21 +21,14 @@ function onError(error) {
             throw error;
     }
 }
-function onListening(server) {
-    const addr = server.address();
-    const bind = typeof addr === "string"
-        ? "pipe " + addr
-        : "port " + addr.port.toString();
-}
 const httpPort = configFns.getProperty("ports.http");
 if (httpPort) {
     const httpServer = http.createServer(app);
     httpServer.listen(httpPort);
     httpServer.on("error", onError);
     httpServer.on("listening", function () {
-        onListening(httpServer);
+        console.log("HTTP listening on " + httpPort.toString());
     });
-    console.log("HTTP listening on " + httpPort.toString());
 }
 const httpsPort = configFns.getProperty("ports.https");
 if (httpsPort) {
@@ -47,7 +40,6 @@ if (httpsPort) {
     httpsServer.listen(httpsPort);
     httpsServer.on("error", onError);
     httpsServer.on("listening", function () {
-        onListening(httpsServer);
+        console.log("HTTPS listening on " + httpsPort.toString());
     });
-    console.log("HTTPS listening on " + httpsPort.toString());
 }
