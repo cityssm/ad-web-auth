@@ -1,6 +1,6 @@
 import type * as configTypes from "../types/configTypes";
-export declare function getProperty(propertyName: "port.http"): number;
-export declare function getProperty(propertyName: "port.https"): number;
+export declare function getProperty(propertyName: "ports.http"): number;
+export declare function getProperty(propertyName: "ports.https"): number;
 export declare function getProperty(propertyName: "activeDirectoryConfig"): configTypes.ActiveDirectoryConfig;
 export declare function getProperty(propertyName: "allowlistIPs"): string[];
 export declare function getProperty(propertyName: "maxQueriesPerMinute"): number;

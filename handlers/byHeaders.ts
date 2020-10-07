@@ -10,8 +10,8 @@ const headersConfig = configFns.getProperty("methods.headers") as configTypes.Me
 
 export const handler: RequestHandler = (req, res) => {
 
-  const userName = req.header[headersConfig.userNameField] as string;
-  const password = req.header[headersConfig.passwordField] as string;
+  const userName = req.header(headersConfig.userNameField);
+  const password = req.header(headersConfig.passwordField);
 
   authenticate.authenticate(userName, password, (auth) => {
     res.json(auth);

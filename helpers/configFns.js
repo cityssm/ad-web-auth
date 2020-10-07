@@ -4,7 +4,7 @@ exports.getProperty = void 0;
 const config = require("../data/config");
 Object.freeze(config);
 const configFallbackValues = new Map();
-configFallbackValues.set("port.https", 46464);
+configFallbackValues.set("ports.https", 46466);
 configFallbackValues.set("allowlistIPs", []);
 configFallbackValues.set("maxQueriesPerMinute", 500);
 configFallbackValues.set("localCache.expirySeconds", 60);

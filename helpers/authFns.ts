@@ -27,7 +27,6 @@ export const authenticate = (userName: string, password: string, callbackFn: (au
     ad.authenticate(userName, password, (err, auth) => {
 
       if (err) {
-        console.log("ERROR: " + JSON.stringify(err));
         return callbackFn(false);
       }
 

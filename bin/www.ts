@@ -46,7 +46,7 @@ function onListening(server: http.Server | https.Server) {
  * Initialize HTTP
  */
 
-const httpPort = configFns.getProperty("port.http");
+const httpPort = configFns.getProperty("ports.http");
 
 if (httpPort) {
 
@@ -66,7 +66,7 @@ if (httpPort) {
  * Initialize HTTPS
  */
 
-const httpsPort = configFns.getProperty("port.https");
+const httpsPort = configFns.getProperty("ports.https");
 
 if (httpsPort) {
 

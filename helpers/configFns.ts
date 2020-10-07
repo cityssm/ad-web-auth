@@ -17,7 +17,7 @@ Object.freeze(config);
 
 const configFallbackValues = new Map<string, any>();
 
-configFallbackValues.set("port.https", 46464);
+configFallbackValues.set("ports.https", 46466);
 configFallbackValues.set("allowlistIPs", []);
 configFallbackValues.set("maxQueriesPerMinute", 500);
 
@@ -29,8 +29,8 @@ configFallbackValues.set("methods.headers", false);
 configFallbackValues.set("methods.post", false);
 
 
-export function getProperty(propertyName: "port.http"): number;
-export function getProperty(propertyName: "port.https"): number;
+export function getProperty(propertyName: "ports.http"): number;
+export function getProperty(propertyName: "ports.https"): number;
 
 export function getProperty(propertyName: "activeDirectoryConfig"): configTypes.ActiveDirectoryConfig;
 

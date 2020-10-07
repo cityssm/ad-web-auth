@@ -17,7 +17,6 @@ exports.authenticate = (userName, password, callbackFn) => {
         const ad = new ActiveDirectory(adConfig);
         ad.authenticate(userName, password, (err, auth) => {
             if (err) {
-                console.log("ERROR: " + JSON.stringify(err));
                 return callbackFn(false);
             }
             if (auth) {

@@ -27,7 +27,7 @@ function onListening(server) {
         ? "pipe " + addr
         : "port " + addr.port.toString();
 }
-const httpPort = configFns.getProperty("port.http");
+const httpPort = configFns.getProperty("ports.http");
 if (httpPort) {
     const httpServer = http.createServer(app);
     httpServer.listen(httpPort);
@@ -37,7 +37,7 @@ if (httpPort) {
     });
     console.log("HTTP listening on " + httpPort.toString());
 }
-const httpsPort = configFns.getProperty("port.https");
+const httpsPort = configFns.getProperty("ports.https");
 if (httpsPort) {
     const pems = selfSigned.generate(null, null);
     const httpsServer = https.createServer({
