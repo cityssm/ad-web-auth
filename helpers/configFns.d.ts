@@ -1,4 +1,11 @@
 import type * as configTypes from "../types/configTypes";
 export declare function getProperty(propertyName: "port.http"): number;
 export declare function getProperty(propertyName: "port.https"): number;
+export declare function getProperty(propertyName: "activeDirectoryConfig"): configTypes.ActiveDirectoryConfig;
+export declare function getProperty(propertyName: "allowlistIPs"): string[];
+export declare function getProperty(propertyName: "maxQueriesPerMinute"): number;
+export declare function getProperty(propertyName: "localCache.expirySeconds"): number;
+export declare function getProperty(propertyName: "localCache.maxSize"): number;
+export declare function getProperty(propertyName: "methods.get"): boolean | configTypes.MethodConfig;
+export declare function getProperty(propertyName: "methods.headers"): boolean | configTypes.MethodConfig;
 export declare function getProperty(propertyName: "methods.post"): boolean | configTypes.MethodConfig;

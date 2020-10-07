@@ -1,9 +1,10 @@
 import * as createError from "http-errors";
 import * as express from "express";
 
-import * as compression from "compression";
-import * as path from "path";
 import * as logger from "morgan";
+import * as rateLimit from "express-rate-limit";
+
+import * as configFns from "./helpers/configFns";
 
 import * as routerAuth from "./routes/auth";
 
@@ -15,16 +16,25 @@ import * as routerAuth from "./routes/auth";
 
 const app = express();
 
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "ejs");
-
-app.use(compression());
 app.use(logger("dev"));
 app.use(express.json());
 
 app.use(express.urlencoded({
   extended: false
 }));
+
+
+/*
+ * RATE LIMITING
+ */
+
+
+const limiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: configFns.getProperty("maxQueriesPerMinute")
+});
+
+app.use(limiter);
 
 
 /*
@@ -50,10 +60,7 @@ app.use(function(err: Error, req: express.Request, res: express.Response, _next:
 
   // Render the error page
   res.status(err.status || 500);
-  res.json({
-    error: err.status
-  });
-
+  res.json(false);
 });
 
 

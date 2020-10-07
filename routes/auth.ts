@@ -1,26 +1,28 @@
 import { Router } from "express";
 import * as configFns from "../helpers/configFns";
 
-import * as authenticate from "../helpers/authFns";
+import { handler as allowlist_handler } from "../handlers/allowlist";
 
-import type * as configTypes from "../types/configTypes";
+import { handler as byGet_handler } from "../handlers/byGet";
+import { handler as byHeaders_handler } from "../handlers/byHeaders";
+import { handler as byPost_handler } from "../handlers/byPost";
 
 
 const router = Router();
 
 
+if (configFns.getProperty("methods.get")) {
+  router.get("/byGet", allowlist_handler, byGet_handler);
+}
+
+
+if (configFns.getProperty("methods.headers")) {
+  router.all("/byHeaders", allowlist_handler, byHeaders_handler);
+}
+
+
 if (configFns.getProperty("methods.post")) {
-
-  const postConfig = configFns.getProperty("methods.post") as configTypes.MethodConfig;
-
-  router.post("/byPost", (req, res) => {
-
-    const userName = req.body[postConfig.userNameField];
-    const password = req.body[postConfig.passwordField];
-
-    return res.json(authenticate.authenticate(userName, password));
-  });
-
+  router.post("/byPost", allowlist_handler, byPost_handler);
 }
 
 

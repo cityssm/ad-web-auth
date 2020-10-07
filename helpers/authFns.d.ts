@@ -1,1 +1,1 @@
-export declare const authenticate: (userName: string, password: string) => boolean;
+export declare const authenticate: (userName: string, password: string, callbackFn: (authenticated: boolean) => void) => boolean;
