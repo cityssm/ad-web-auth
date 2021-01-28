@@ -10,10 +10,10 @@ const postConfig = configFns.getProperty("methods.post") as configTypes.MethodCo
 
 export const handler: RequestHandler = (req, res) => {
 
- const userName = req.body[postConfig.userNameField];
- const password = req.body[postConfig.passwordField];
+  const userName = req.body[postConfig.userNameField];
+  const password = req.body[postConfig.passwordField];
 
- authenticate.authenticate(userName, password, (auth) => {
-   res.json(auth);
- });
+  authenticate.authenticate(userName, password, (auth) => {
+    res.json(auth);
+  });
 };
