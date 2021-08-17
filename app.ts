@@ -1,12 +1,15 @@
-import * as createError from "http-errors";
-import * as express from "express";
+import createError from "http-errors";
+import express from "express";
 
-import * as logger from "morgan";
-import * as rateLimit from "express-rate-limit";
+import rateLimit from "express-rate-limit";
 
-import * as configFns from "./helpers/configFns";
+import * as configFunctions from "./helpers/configFunctions.js";
 
-import * as routerAuth from "./routes/auth";
+import handlerAllow from "./handlers/allowlist.js";
+import routerAuth from "./routes/auth.js";
+
+import debug from "debug";
+const debugApp = debug("ad-web-auth:app");
 
 
 /*
@@ -14,9 +17,13 @@ import * as routerAuth from "./routes/auth";
  */
 
 
-const app = express();
+export const app = express();
 
-app.use(logger("dev"));
+app.use((request, _response, next) => {
+  debugApp(`${request.method} ${request.url}`);
+  next();
+});
+
 app.use(express.json());
 
 app.use(express.urlencoded({
@@ -31,7 +38,7 @@ app.use(express.urlencoded({
 
 const limiter = rateLimit({
   windowMs: 60 * 1000,
-  max: configFns.getProperty("maxQueriesPerMinute")
+  max: configFunctions.getProperty("maxQueriesPerMinute")
 });
 
 app.use(limiter);
@@ -42,26 +49,26 @@ app.use(limiter);
  */
 
 
-app.use("/auth", routerAuth);
+app.use("/auth", handlerAllow, routerAuth);
 
 
 // Catch 404 and forward to error handler
-app.use(function(_req, _res, next) {
+app.use(function(_request, _response, next) {
   next(createError(404));
 });
 
 
 // Error handler
-app.use(function(err: Error, req: express.Request, res: express.Response, _next: express.NextFunction) {
+app.use(function(error: Error, request: express.Request, response: express.Response) {
 
   // Set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get("env") === "development" ? err : {};
+  response.locals.message = error.message;
+  response.locals.error = request.app.get("env") === "development" ? error : {};
 
   // Render the error page
-  res.status(err.status || 500);
-  res.json(false);
+  response.status(error.status || 500);
+  response.json(false);
 });
 
 
-export = app;
+export default app;

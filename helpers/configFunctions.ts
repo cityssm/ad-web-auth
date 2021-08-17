@@ -5,9 +5,8 @@ import type * as configTypes from "../types/configTypes";
  * LOAD CONFIGURATION
  */
 
-import * as config from "../data/config";
-
-Object.freeze(config);
+// eslint-disable-next-line node/no-unpublished-import
+import config from "../data/config.js";
 
 
 /*
@@ -15,9 +14,9 @@ Object.freeze(config);
  */
 
 
-const configFallbackValues = new Map<string, any>();
+const configFallbackValues = new Map<string, unknown>();
 
-configFallbackValues.set("ports.https", 46466);
+configFallbackValues.set("ports.https", 46_466);
 configFallbackValues.set("allowlistIPs", []);
 configFallbackValues.set("maxQueriesPerMinute", 500);
 
@@ -46,21 +45,21 @@ export function getProperty(propertyName: "methods.headers"): boolean | configTy
 export function getProperty(propertyName: "methods.post"): boolean | configTypes.MethodConfig;
 
 
-export function getProperty(propertyName: string): any {
+export function getProperty(propertyName: string): unknown {
 
   const propertyNameSplit = propertyName.split(".");
 
-  let currentObj = config;
+  let currentObject = config;
 
-  for (let index = 0; index < propertyNameSplit.length; index += 1) {
+  for (const element of propertyNameSplit) {
 
-    currentObj = currentObj[propertyNameSplit[index]];
+    currentObject = currentObject[element];
 
-    if (!currentObj) {
+    if (!currentObject) {
       return configFallbackValues.get(propertyName);
     }
 
   }
 
-  return currentObj;
+  return currentObject;
 }

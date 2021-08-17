@@ -27,4 +27,4 @@ const config: configTypes.Config = {
 };
 
 
-module.exports = config;
+export default config;

@@ -1,16 +1,13 @@
 import { Service } from "node-windows";
-import * as path from "path";
+import { serviceConfig } from "./windowsService.js";
 
 // Create a new service object
-var svc = new Service({
-  name: "Active Directory Web Authentication",
-  script: path.join(__dirname, "bin", "www.js")
-});
+const svc = new Service(serviceConfig);
 
 // Listen for the "uninstall" event so we know when it's done.
 svc.on("uninstall", function() {
   console.log("Uninstall complete.");
-  console.log("The service exists: ", svc.exists);
+  console.log("The service exists:", svc.exists);
 });
 
 // Uninstall the service.

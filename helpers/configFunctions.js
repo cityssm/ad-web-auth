@@ -1,8 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getProperty = void 0;
-const config = require("../data/config");
-Object.freeze(config);
+import config from "../data/config.js";
 const configFallbackValues = new Map();
 configFallbackValues.set("ports.https", 46466);
 configFallbackValues.set("allowlistIPs", []);
@@ -12,15 +8,14 @@ configFallbackValues.set("localCache.maxSize", 100);
 configFallbackValues.set("methods.get", false);
 configFallbackValues.set("methods.headers", false);
 configFallbackValues.set("methods.post", false);
-function getProperty(propertyName) {
+export function getProperty(propertyName) {
     const propertyNameSplit = propertyName.split(".");
-    let currentObj = config;
-    for (let index = 0; index < propertyNameSplit.length; index += 1) {
-        currentObj = currentObj[propertyNameSplit[index]];
-        if (!currentObj) {
+    let currentObject = config;
+    for (const element of propertyNameSplit) {
+        currentObject = currentObject[element];
+        if (!currentObject) {
             return configFallbackValues.get(propertyName);
         }
     }
-    return currentObj;
+    return currentObject;
 }
-exports.getProperty = getProperty;

@@ -1,16 +1,16 @@
-#!/usr/bin/env node
+/* eslint-disable no-process-exit, unicorn/no-process-exit */
 
-import * as app from "../app";
+import { app } from "../app.js";
 
 import * as http from "http";
 import * as https from "https";
 
-import * as selfSigned from "selfsigned";
+import devcert from "devcert";
 
-import * as configFns from "../helpers/configFns";
+import * as configFunctions from "../helpers/configFunctions.js";
 
 
-function onError(error: Error) {
+const onError = (error: Error) => {
 
   if (error.syscall !== "listen") {
     throw error;
@@ -37,7 +37,7 @@ function onError(error: Error) {
  * Initialize HTTP
  */
 
-const httpPort = configFns.getProperty("ports.http");
+const httpPort = configFunctions.getProperty("ports.http");
 
 if (httpPort) {
 
@@ -56,16 +56,15 @@ if (httpPort) {
  * Initialize HTTPS
  */
 
-const httpsPort = configFns.getProperty("ports.https");
+const httpsPort = configFunctions.getProperty("ports.https");
 
 if (httpsPort) {
 
-  const pems = selfSigned.generate(null, null);
+  const ssl = await devcert.certificateFor([
+    "localhost"
+  ]);
 
-  const httpsServer = https.createServer({
-    key: pems.private,
-    cert: pems.cert
-  }, app);
+  const httpsServer = https.createServer(ssl, app);
 
   httpsServer.listen(httpsPort);
 

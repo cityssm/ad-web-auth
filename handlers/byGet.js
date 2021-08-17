@@ -1,13 +1,10 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.handler = void 0;
-const configFns = require("../helpers/configFns");
-const authenticate = require("../helpers/authFns");
-const getConfig = configFns.getProperty("methods.get");
-exports.handler = (req, res) => {
-    const userName = req.query[getConfig.userNameField];
-    const password = req.query[getConfig.passwordField];
-    authenticate.authenticate(userName, password, (auth) => {
-        return res.json(auth);
-    });
+import * as configFunctions from "../helpers/configFunctions.js";
+import { authenticate } from "../helpers/authFunctions.js";
+const getConfig = configFunctions.getProperty("methods.get");
+export const handler = async (request, response) => {
+    const userName = request.query[getConfig.userNameField];
+    const password = request.query[getConfig.passwordField];
+    const auth = await authenticate(userName, password);
+    return response.json(auth);
 };
+export default handler;

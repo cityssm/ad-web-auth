@@ -1,19 +1,22 @@
-import * as configFns from "../helpers/configFns";
-import * as authenticate from "../helpers/authFns";
+import * as configFunctions from "../helpers/configFunctions.js";
+import { authenticate } from "../helpers/authFunctions.js";
 
 import type { RequestHandler } from "express";
 import type * as configTypes from "../types/configTypes";
 
 
-const getConfig = configFns.getProperty("methods.get") as configTypes.MethodConfig;
+const getConfig = configFunctions.getProperty("methods.get") as configTypes.MethodConfig;
 
 
-export const handler: RequestHandler = (req, res) => {
+export const handler: RequestHandler = async (request, response) => {
 
-  const userName = req.query[getConfig.userNameField] as string;
-  const password = req.query[getConfig.passwordField] as string;
+  const userName = request.query[getConfig.userNameField] as string;
+  const password = request.query[getConfig.passwordField] as string;
 
-  authenticate.authenticate(userName, password, (auth) => {
-    return res.json(auth);
-  });
+  const auth = await authenticate(userName, password);
+
+  return response.json(auth);
 };
+
+
+export default handler;

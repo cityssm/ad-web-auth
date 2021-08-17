@@ -1,12 +1,9 @@
-#!/usr/bin/env node
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const app = require("../app");
-const http = require("http");
-const https = require("https");
-const selfSigned = require("selfsigned");
-const configFns = require("../helpers/configFns");
-function onError(error) {
+import { app } from "../app.js";
+import * as http from "http";
+import * as https from "https";
+import devcert from "devcert";
+import * as configFunctions from "../helpers/configFunctions.js";
+const onError = (error) => {
     if (error.syscall !== "listen") {
         throw error;
     }
@@ -20,8 +17,8 @@ function onError(error) {
         default:
             throw error;
     }
-}
-const httpPort = configFns.getProperty("ports.http");
+};
+const httpPort = configFunctions.getProperty("ports.http");
 if (httpPort) {
     const httpServer = http.createServer(app);
     httpServer.listen(httpPort);
@@ -30,13 +27,12 @@ if (httpPort) {
         console.log("HTTP listening on " + httpPort.toString());
     });
 }
-const httpsPort = configFns.getProperty("ports.https");
+const httpsPort = configFunctions.getProperty("ports.https");
 if (httpsPort) {
-    const pems = selfSigned.generate(null, null);
-    const httpsServer = https.createServer({
-        key: pems.private,
-        cert: pems.cert
-    }, app);
+    const ssl = await devcert.certificateFor([
+        "localhost"
+    ]);
+    const httpsServer = https.createServer(ssl, app);
     httpsServer.listen(httpsPort);
     httpsServer.on("error", onError);
     httpsServer.on("listening", function () {

@@ -1,20 +1,23 @@
-import * as configFns from "../helpers/configFns";
+import * as configFunctions from "../helpers/configFunctions.js";
 
 import type { RequestHandler } from "express";
 
 
-const localIPs = ["127.0.0.1", "1"];
+const localIPs = new Set(["127.0.0.1", "1"]);
 
 
-export const handler: RequestHandler = (req, res, next) => {
+export const handler: RequestHandler = (request, response, next) => {
 
-  const ipAddress = req.ip.split(":").pop();
+  const ipAddress = request.ip.split(":").pop();
 
-  if (localIPs.includes(ipAddress) ||
-    configFns.getProperty("allowlistIPs").includes(ipAddress)) {
+  if (localIPs.has(ipAddress) ||
+    configFunctions.getProperty("allowlistIPs").includes(ipAddress)) {
     return next();
   }
 
-  res.status(403);
-  return res.json(false);
+  response.status(403);
+  return response.json(false);
 };
+
+
+export default handler;

@@ -1,5 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const config = {
     activeDirectoryConfig: {
         url: "ldap://dc.example.com",
@@ -21,4 +19,4 @@ const config = {
         "192.168.1.234"
     ]
 };
-module.exports = config;
+export default config;
