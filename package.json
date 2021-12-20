@@ -46,7 +46,7 @@
     "devcert": "^1.2.0",
     "express": "^4.17.1",
     "express-rate-limit": "^5.3.0",
-    "http-errors": "^1.8.0",
+    "http-errors": "^2.0.0",
     "node-cache": "^5.1.2",
     "selfsigned": "^1.10.11"
   }
