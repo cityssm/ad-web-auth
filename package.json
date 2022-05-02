@@ -35,7 +35,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.1.0",
     "eslint-plugin-unicorn": "^35.0.0",
-    "nodemon": "^2.0.12"
+    "nodemon": "^2.0.16"
   },
   "dependencies": {
     "activedirectory2": "^2.1.0",
