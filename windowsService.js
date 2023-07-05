@@ -1,7 +1,7 @@
-import path from "path";
-const __dirname = ".";
+import path from 'node:path';
+const _dirname = '.';
 export const serviceConfig = {
-    name: "Active Directory Web Authentication",
-    description: "A web application to authenicate Active Directory users.",
-    script: path.join(__dirname, "bin", "www.js")
+    name: 'Active Directory Web Authentication',
+    description: 'A web application to authenicate Active Directory users.',
+    script: path.join(_dirname, 'bin', 'www.js')
 };

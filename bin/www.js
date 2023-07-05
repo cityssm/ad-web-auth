@@ -1,41 +1,29 @@
-import { app } from "../app.js";
-import * as http from "http";
-import * as https from "https";
-import devcert from "devcert";
-import * as configFunctions from "../helpers/configFunctions.js";
-const onError = (error) => {
-    if (error.syscall !== "listen") {
-        throw error;
-    }
-    switch (error.code) {
-        case "EACCES":
-            console.error("Requires elevated privileges");
-            process.exit(1);
-        case "EADDRINUSE":
-            console.error("Port is already in use.");
-            process.exit(1);
-        default:
-            throw error;
-    }
+import '../helpers/polyfills.js';
+import cluster from 'node:cluster';
+import os from 'node:os';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import Debug from 'debug';
+const debug = Debug(`ad-web-auth:www:${process.pid}`);
+const directoryName = dirname(fileURLToPath(import.meta.url));
+const processCount = Math.min(4, os.cpus().length);
+process.title = 'AD Web Auth (Primary)';
+debug(`Primary pid:   ${process.pid}`);
+debug(`Primary title: ${process.title}`);
+debug(`Launching ${processCount} processes`);
+const clusterSettings = {
+    exec: directoryName + '/wwwProcess.js'
 };
-const httpPort = configFunctions.getProperty("ports.http");
-if (httpPort) {
-    const httpServer = http.createServer(app);
-    httpServer.listen(httpPort);
-    httpServer.on("error", onError);
-    httpServer.on("listening", function () {
-        console.log("HTTP listening on " + httpPort.toString());
-    });
+cluster.setupPrimary(clusterSettings);
+const activeWorkers = new Map();
+for (let index = 0; index < processCount; index += 1) {
+    const worker = cluster.fork();
+    activeWorkers.set(worker.process.pid, worker);
 }
-const httpsPort = configFunctions.getProperty("ports.https");
-if (httpsPort) {
-    const ssl = await devcert.certificateFor([
-        "localhost"
-    ]);
-    const httpsServer = https.createServer(ssl, app);
-    httpsServer.listen(httpsPort);
-    httpsServer.on("error", onError);
-    httpsServer.on("listening", function () {
-        console.log("HTTPS listening on " + httpsPort.toString());
-    });
-}
+cluster.on('exit', (worker, code, signal) => {
+    debug(`Worker ${worker.process.pid.toString()} has been killed`);
+    activeWorkers.delete(worker.process.pid);
+    debug('Starting another worker');
+    const newWorker = cluster.fork();
+    activeWorkers.set(newWorker.process.pid, newWorker);
+});

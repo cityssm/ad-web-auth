@@ -1,78 +1,44 @@
-/* eslint-disable no-process-exit, unicorn/no-process-exit */
+import '../helpers/polyfills.js'
 
-import { app } from "../app.js";
+import type { Worker } from 'node:cluster'
+import cluster from 'node:cluster'
+import os from 'node:os'
+import { dirname } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
-import * as http from "http";
-import * as https from "https";
+import Debug from 'debug'
 
-import devcert from "devcert";
+const debug = Debug(`ad-web-auth:www:${process.pid}`)
 
-import * as configFunctions from "../helpers/configFunctions.js";
+const directoryName = dirname(fileURLToPath(import.meta.url))
 
+const processCount = Math.min(4, os.cpus().length)
 
-const onError = (error: Error) => {
+process.title = 'AD Web Auth (Primary)'
 
-  if (error.syscall !== "listen") {
-    throw error;
-  }
+debug(`Primary pid:   ${process.pid}`)
+debug(`Primary title: ${process.title}`)
+debug(`Launching ${processCount} processes`)
 
-  // handle specific listen errors with friendly messages
-  switch (error.code) {
-    case "EACCES":
-      console.error("Requires elevated privileges");
-      process.exit(1);
-    // break;
-
-    case "EADDRINUSE":
-      console.error("Port is already in use.");
-      process.exit(1);
-    // break;
-
-    default:
-      throw error;
-  }
+const clusterSettings = {
+  exec: directoryName + '/wwwProcess.js'
 }
 
-/**
- * Initialize HTTP
- */
+cluster.setupPrimary(clusterSettings)
 
-const httpPort = configFunctions.getProperty("ports.http");
+const activeWorkers = new Map<number, Worker>()
 
-if (httpPort) {
-
-  const httpServer = http.createServer(app);
-
-  httpServer.listen(httpPort);
-
-  httpServer.on("error", onError);
-  httpServer.on("listening", function() {
-    console.log("HTTP listening on " + httpPort.toString());
-  });
-
+for (let index = 0; index < processCount; index += 1) {
+  const worker = cluster.fork()
+  activeWorkers.set(worker.process.pid!, worker)
 }
 
-/**
- * Initialize HTTPS
- */
+cluster.on('exit', (worker, code, signal) => {
+  debug(`Worker ${worker.process.pid!.toString()} has been killed`)
+  activeWorkers.delete(worker.process.pid!)
 
-const httpsPort = configFunctions.getProperty("ports.https");
+  debug('Starting another worker')
 
-if (httpsPort) {
-
-  const ssl = await devcert.certificateFor([
-    "localhost"
-  ]);
-
-  const httpsServer = https.createServer(ssl, app);
-
-  httpsServer.listen(httpsPort);
-
-  httpsServer.on("error", onError);
-
-  httpsServer.on("listening", function() {
-    console.log("HTTPS listening on " + httpsPort.toString());
-  });
-
-
-}
+  const newWorker = cluster.fork()
+  activeWorkers.set(newWorker.process.pid!, newWorker)
+})
