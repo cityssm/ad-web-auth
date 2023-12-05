@@ -1,5 +1,3 @@
-import '../helpers/polyfills.js'
-
 import type { Worker } from 'node:cluster'
 import cluster from 'node:cluster'
 import os from 'node:os'

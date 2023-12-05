@@ -1,9 +1,9 @@
-/* eslint-disable node/no-unpublished-import */
-
-import './polyfills.js'
-
+// eslint-disable-next-line n/no-unpublished-import
 import config from '../data/config.js'
-import type * as configTypes from '../types/configTypes'
+import type {
+  ActiveDirectoryConfig,
+  MethodConfig
+} from '../types/configTypes.js'
 
 /*
  * SET UP FALLBACK VALUES
@@ -18,16 +18,12 @@ configFallbackValues.set('maxQueriesPerMinute', 500)
 configFallbackValues.set('localCache.expirySeconds', 60)
 configFallbackValues.set('localCache.maxSize', 100)
 
-configFallbackValues.set('methods.get', false)
-configFallbackValues.set('methods.headers', false)
-configFallbackValues.set('methods.post', false)
-
 export function getProperty(propertyName: 'ports.http'): number | undefined
 export function getProperty(propertyName: 'ports.https'): number
 
 export function getProperty(
   propertyName: 'activeDirectoryConfig'
-): configTypes.ActiveDirectoryConfig
+): ActiveDirectoryConfig
 
 export function getProperty(propertyName: 'allowlistIPs'): string[]
 
@@ -38,13 +34,13 @@ export function getProperty(propertyName: 'localCache.maxSize'): number
 
 export function getProperty(
   propertyName: 'methods.get'
-): boolean | configTypes.MethodConfig
+): MethodConfig | undefined
 export function getProperty(
   propertyName: 'methods.headers'
-): boolean | configTypes.MethodConfig
+): MethodConfig | undefined
 export function getProperty(
   propertyName: 'methods.post'
-): boolean | configTypes.MethodConfig
+): MethodConfig | undefined
 
 export function getProperty(propertyName: string): unknown {
   const propertyNameSplit = propertyName.split('.')

@@ -1,12 +1,11 @@
-import './polyfills.js';
-import type * as configTypes from '../types/configTypes';
+import type { ActiveDirectoryConfig, MethodConfig } from '../types/configTypes.js';
 export declare function getProperty(propertyName: 'ports.http'): number | undefined;
 export declare function getProperty(propertyName: 'ports.https'): number;
-export declare function getProperty(propertyName: 'activeDirectoryConfig'): configTypes.ActiveDirectoryConfig;
+export declare function getProperty(propertyName: 'activeDirectoryConfig'): ActiveDirectoryConfig;
 export declare function getProperty(propertyName: 'allowlistIPs'): string[];
 export declare function getProperty(propertyName: 'maxQueriesPerMinute'): number;
 export declare function getProperty(propertyName: 'localCache.expirySeconds'): number;
 export declare function getProperty(propertyName: 'localCache.maxSize'): number;
-export declare function getProperty(propertyName: 'methods.get'): boolean | configTypes.MethodConfig;
-export declare function getProperty(propertyName: 'methods.headers'): boolean | configTypes.MethodConfig;
-export declare function getProperty(propertyName: 'methods.post'): boolean | configTypes.MethodConfig;
+export declare function getProperty(propertyName: 'methods.get'): MethodConfig | undefined;
+export declare function getProperty(propertyName: 'methods.headers'): MethodConfig | undefined;
+export declare function getProperty(propertyName: 'methods.post'): MethodConfig | undefined;

@@ -1,11 +1,12 @@
-import * as configFunctions from './configFunctions.js'
+import ActiveDirectory from 'activedirectory2'
 import * as bcrypt from 'bcrypt'
+import debug from 'debug'
 import NodeCache from 'node-cache'
 
-import ActiveDirectory from 'activedirectory2'
+import * as configFunctions from './configFunctions.js'
+
 const adConfig = configFunctions.getProperty('activeDirectoryConfig')
 
-import debug from 'debug'
 const debugAuth = debug('ad-web-auth:authFunctions')
 
 const loginCache = new NodeCache({
@@ -17,28 +18,33 @@ export const authenticate = async (
   userName: string,
   password: string
 ): Promise<boolean> => {
-  if (!userName || userName === '' || !password || password === '') {
+  if ((userName ?? '') === '' || (password ?? '') === '') {
     return false
   }
 
-  const cachedPassHash = loginCache.get(userName) as string
+  const cachedPassHash = loginCache.get(userName)
 
-  if (cachedPassHash) {
+  if (cachedPassHash !== undefined) {
     debugAuth('Cached record found')
-    return await bcrypt.compare(password, cachedPassHash)
+    try {
+      return await bcrypt.compare(password, cachedPassHash as string)
+    } catch (error) {
+      console.log(error)
+      return false
+    }
   }
+  const passHash = await bcrypt.hash(password, 10)
 
-  return new Promise((resolve) => {
+  return await new Promise((resolve) => {
     try {
       const ad = new ActiveDirectory(adConfig)
 
-      ad.authenticate(userName, password, async (error, auth) => {
+      ad.authenticate(userName, password, (error, auth) => {
         if (error) {
           resolve(false)
         }
 
         if (auth) {
-          const passHash = await bcrypt.hash(password, 10)
           loginCache.set(userName, passHash)
         }
 
