@@ -24,19 +24,20 @@ const clusterSettings = {
 
 cluster.setupPrimary(clusterSettings)
 
+// eslint-disable-next-line sonarjs/no-unused-collection
 const activeWorkers = new Map<number, Worker>()
 
 for (let index = 0; index < processCount; index += 1) {
   const worker = cluster.fork()
-  activeWorkers.set(worker.process.pid!, worker)
+  activeWorkers.set(worker.process.pid ?? 0, worker)
 }
 
 cluster.on('exit', (worker, code, signal) => {
-  debug(`Worker ${worker.process.pid!.toString()} has been killed`)
-  activeWorkers.delete(worker.process.pid!)
+  debug(`Worker ${(worker.process.pid ?? 0).toString()} has been killed`)
+  activeWorkers.delete(worker.process.pid ?? 0)
 
   debug('Starting another worker')
 
   const newWorker = cluster.fork()
-  activeWorkers.set(newWorker.process.pid!, newWorker)
+  activeWorkers.set(newWorker.process.pid ?? 0, newWorker)
 })
