@@ -1,3 +1,4 @@
+import { minutesToMillis } from '@cityssm/to-millis';
 import debug from 'debug';
 import express from 'express';
 import rateLimit from 'express-rate-limit';
@@ -7,6 +8,7 @@ import * as configFunctions from './helpers/configFunctions.js';
 import routerAuth from './routes/auth.js';
 const debugApp = debug('ad-web-auth:app');
 export const app = express();
+app.disable('X-Powered-By');
 app.use((request, _response, next) => {
     debugApp(`${request.method} ${request.url}`);
     next();
@@ -16,7 +18,7 @@ app.use(express.urlencoded({
     extended: false
 }));
 const limiter = rateLimit({
-    windowMs: 60 * 1000,
+    windowMs: minutesToMillis(1),
     max: configFunctions.getProperty('maxQueriesPerMinute')
 });
 app.use(limiter);

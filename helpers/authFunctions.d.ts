@@ -1,1 +1,1 @@
-export declare const authenticate: (userName: string, password: string) => Promise<boolean>;
+export declare function authenticate(userName: string | null | undefined, password: string | null | undefined): Promise<boolean>;

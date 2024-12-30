@@ -1,14 +1,14 @@
 import type { Worker } from 'node:cluster'
 import cluster from 'node:cluster'
 import os from 'node:os'
-import { dirname } from 'node:path'
+import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import Debug from 'debug'
 
 const debug = Debug(`ad-web-auth:www:${process.pid}`)
 
-const directoryName = dirname(fileURLToPath(import.meta.url))
+const directoryName = path.dirname(fileURLToPath(import.meta.url))
 
 const processCount = Math.min(4, os.cpus().length)
 

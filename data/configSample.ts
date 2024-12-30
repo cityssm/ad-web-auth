@@ -1,4 +1,7 @@
-import type * as configTypes from '../types/configTypes'
+// eslint-disable-next-line @eslint-community/eslint-comments/disable-enable-pair
+/* eslint-disable sonarjs/no-hardcoded-ip, sonarjs/no-hardcoded-passwords */
+
+import type * as configTypes from '../types/configTypes.js'
 
 const config: configTypes.Config = {
   activeDirectoryConfig: {

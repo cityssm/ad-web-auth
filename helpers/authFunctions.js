@@ -9,8 +9,14 @@ const loginCache = new NodeCache({
     maxKeys: configFunctions.getProperty('localCache.maxSize'),
     stdTTL: configFunctions.getProperty('localCache.expirySeconds')
 });
-export const authenticate = async (userName, password) => {
-    if ((userName ?? '') === '' || (password ?? '') === '') {
+export async function authenticate(userName, password) {
+    if (userName === null ||
+        userName === undefined ||
+        userName === '' ||
+        password === null ||
+        password === undefined ||
+        password === '' ||
+        adConfig === undefined) {
         return false;
     }
     const cachedPassHash = loginCache.get(userName);
@@ -42,4 +48,4 @@ export const authenticate = async (userName, password) => {
             resolve(false);
         }
     });
-};
+}

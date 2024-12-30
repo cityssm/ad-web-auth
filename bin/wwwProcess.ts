@@ -1,10 +1,14 @@
-// eslint-disable-next-line eslint-comments/disable-enable-pair
-/* eslint-disable n/no-process-exit, unicorn/no-process-exit */
+// eslint-disable-next-line @eslint-community/eslint-comments/disable-enable-pair
+/* eslint-disable unicorn/no-process-exit */
 
 import * as http from 'node:http'
 
+import Debug from 'debug'
+
 import { app } from '../app.js'
 import * as configFunctions from '../helpers/configFunctions.js'
+
+const debug = Debug(`ad-web-auth:wwwProcess:${process.pid}`)
 
 interface ServerError extends Error {
   syscall: string
@@ -18,7 +22,6 @@ function onError(error: ServerError): void {
 
   // handle specific listen errors with friendly messages
   switch (error.code) {
-    // eslint-disable-next-line no-fallthrough
     case 'EACCES': {
       console.error('Requires elevated privileges')
       process.exit(1)
@@ -52,6 +55,6 @@ if (httpPort !== undefined) {
 
   httpServer.on('error', onError)
   httpServer.on('listening', function () {
-    console.log('HTTP listening on ' + httpPort.toString())
+    debug(`HTTP listening on ${httpPort.toString()}`)
   })
 }

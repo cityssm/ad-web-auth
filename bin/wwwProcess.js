@@ -1,6 +1,8 @@
 import * as http from 'node:http';
+import Debug from 'debug';
 import { app } from '../app.js';
 import * as configFunctions from '../helpers/configFunctions.js';
+const debug = Debug(`ad-web-auth:wwwProcess:${process.pid}`);
 function onError(error) {
     if (error.syscall !== 'listen') {
         throw error;
@@ -25,6 +27,6 @@ if (httpPort !== undefined) {
     httpServer.listen(httpPort);
     httpServer.on('error', onError);
     httpServer.on('listening', function () {
-        console.log('HTTP listening on ' + httpPort.toString());
+        debug(`HTTP listening on ${httpPort.toString()}`);
     });
 }

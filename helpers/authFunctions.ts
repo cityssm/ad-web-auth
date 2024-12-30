@@ -14,11 +14,19 @@ const loginCache = new NodeCache({
   stdTTL: configFunctions.getProperty('localCache.expirySeconds')
 })
 
-export const authenticate = async (
-  userName: string,
-  password: string
-): Promise<boolean> => {
-  if ((userName ?? '') === '' || (password ?? '') === '') {
+export async function authenticate(
+  userName: string | null | undefined,
+  password: string | null | undefined
+): Promise<boolean> {
+  if (
+    userName === null ||
+    userName === undefined ||
+    userName === '' ||
+    password === null ||
+    password === undefined ||
+    password === '' ||
+    adConfig === undefined
+  ) {
     return false
   }
 
@@ -35,6 +43,7 @@ export const authenticate = async (
   }
   const passHash = await bcrypt.hash(password, 10)
 
+  // eslint-disable-next-line promise/avoid-new
   return await new Promise((resolve) => {
     try {
       const ad = new ActiveDirectory(adConfig)
