@@ -1,18 +1,20 @@
 const config = {
-    activeDirectoryConfig: {
-        url: 'ldap://dc.example.com',
+    ldapClient: {
+        url: 'ldap://dc.example.com'
+    },
+    activeDirectoryAuthenticate: {
         baseDN: 'dc=example,dc=com',
-        username: 'user@example.com',
-        password: 'p@ssword'
+        bindUserDN: 'CN=service acct,CN=Users,DC=example,DC=com',
+        bindUserPassword: 'password123'
     },
     methods: {
-        post: {
-            userNameField: 'u',
-            passwordField: 'p'
-        },
         headers: {
-            userNameField: 'AD-UserName',
-            passwordField: 'AD-Password'
+            passwordField: 'AD-Password',
+            userNameField: 'AD-UserName'
+        },
+        post: {
+            passwordField: 'p',
+            userNameField: 'u'
         }
     },
     allowlistIPs: ['192.168.1.234']

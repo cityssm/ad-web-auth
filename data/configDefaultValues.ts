@@ -1,9 +1,10 @@
+import type {
+  ActiveDirectoryAuthenticateConfig,
+  LdapClientOptions
+} from '@cityssm/activedirectory-authenticate'
 import { minutesToSeconds } from '@cityssm/to-millis'
 
-import type {
-  ActiveDirectoryConfig,
-  MethodConfig
-} from '../types/configTypes.js'
+import type { MethodConfig } from '../types/configTypes.js'
 
 export const configDefaultValues = {
   'ports.http': undefined as number | undefined,
@@ -13,7 +14,10 @@ export const configDefaultValues = {
   'methods.headers': undefined as MethodConfig | undefined,
   'methods.post': undefined as MethodConfig | undefined,
 
-  activeDirectoryConfig: undefined as ActiveDirectoryConfig | undefined,
+  activeDirectoryAuthenticate: undefined as
+    | ActiveDirectoryAuthenticateConfig
+    | undefined,
+  ldapClient: undefined as LdapClientOptions | undefined,
 
   allowlistIPs: [] as string[],
   maxQueriesPerMinute: 500,

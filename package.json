@@ -1,54 +1,54 @@
 {
   "name": "ad-web-auth",
   "version": "0.1.0",
-  "type": "module",
   "description": "",
-  "exports": "./app.js",
-  "scripts": {
-    "start": "cross-env NODE_ENV=production node ./bin/www",
-    "dev": "cross-env NODE_ENV=dev DEBUG=ad-web-auth:* nodemon ./bin/www"
-  },
-  "engines": {
-    "node": ">=18.0.0"
+  "homepage": "https://github.com/cityssm/ad-web-auth#readme",
+  "bugs": {
+    "url": "https://github.com/cityssm/ad-web-auth/issues"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/cityssm/ad-web-auth.git"
   },
-  "author": "Corporation of the City of Sault Ste. Marie",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/cityssm/ad-web-auth/issues"
-  },
-  "homepage": "https://github.com/cityssm/ad-web-auth#readme",
-  "devDependencies": {
-    "@types/activedirectory2": "^1.2.6",
-    "@types/bcrypt": "^5.0.2",
-    "@types/compression": "^1.7.5",
-    "@types/debug": "^4.1.12",
-    "@types/express": "^5.0.0",
-    "@types/http-errors": "^2.0.4",
-    "@types/node": "^22.10.2",
-    "@types/node-windows": "^0.1.6",
-    "eslint-config-cityssm": "^18.2.0",
-    "nodemon": "^3.1.9",
-    "prettier-config-cityssm": "^1.0.0"
+  "author": "Corporation of the City of Sault Ste. Marie",
+  "type": "module",
+  "exports": "./app.js",
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development nodemon ./bin/www",
+    "start": "cross-env NODE_ENV=production node ./bin/www"
   },
   "dependencies": {
+    "@cityssm/activedirectory-authenticate": "^1.0.0",
     "@cityssm/configurator": "^0.1.0",
     "@cityssm/is-private-network-address": "^1.0.0",
     "@cityssm/to-millis": "^1.0.0",
-    "activedirectory2": "^2.2.0",
-    "bcrypt": "^5.1.1",
-    "compression": "^1.7.5",
+    "bcrypt": "^6.0.0",
+    "compression": "^1.8.0",
     "cross-env": "^7.0.3",
-    "debug": "^4.4.0",
-    "express": "^4.21.2",
-    "express-rate-limit": "^7.5.0",
+    "debug": "^4.4.1",
+    "exit-hook": "^4.0.0",
+    "express": "^5.1.0",
+    "express-rate-limit": "^7.5.1",
     "http-errors": "^2.0.0",
     "node-cache": "^5.1.2"
   },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/compression": "^1.8.1",
+    "@types/debug": "^4.1.12",
+    "@types/express": "^5.0.3",
+    "@types/http-errors": "^2.0.5",
+    "@types/node": "^24.0.13",
+    "@types/node-windows": "^0.1.6",
+    "eslint-config-cityssm": "^26.0.0",
+    "nodemon": "^3.1.10",
+    "prettier-config-cityssm": "^1.0.0"
+  },
   "optionalDependencies": {
     "node-windows": "^1.0.0-beta.8"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

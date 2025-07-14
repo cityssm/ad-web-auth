@@ -1,12 +1,17 @@
 import { isLocal } from '@cityssm/is-private-network-address'
 import Debug from 'debug'
-import type { RequestHandler } from 'express'
+import type { NextFunction, Request, Response } from 'express'
 
+import { DEBUG_NAMESPACE } from '../debug.config.js'
 import * as configFunctions from '../helpers/configFunctions.js'
 
-const debug = Debug('ad-web-auth:allowlist')
+const debug = Debug(`${DEBUG_NAMESPACE}:allowlist`)
 
-export const handler: RequestHandler = (request, response, next) => {
+export default function handler(
+  request: Request,
+  response: Response,
+  next: NextFunction
+): void {
   const ipAddress = request.ip?.split(':').pop() ?? ''
 
   debug(`Testing IP: ${ipAddress}`)
@@ -19,8 +24,5 @@ export const handler: RequestHandler = (request, response, next) => {
     return
   }
 
-  response.status(403)
-  response.json(false)
+  response.status(403).json(false)
 }
-
-export default handler

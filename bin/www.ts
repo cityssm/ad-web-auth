@@ -1,10 +1,15 @@
-import type { Worker } from 'node:cluster'
-import cluster from 'node:cluster'
+import cluster, { type Worker } from 'node:cluster'
 import os from 'node:os'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import Debug from 'debug'
+
+import { DEBUG_ENABLE_NAMESPACES } from '../debug.config.js'
+
+if (process.env.NODE_ENV === 'development') {
+  Debug.enable(DEBUG_ENABLE_NAMESPACES)
+}
 
 const debug = Debug(`ad-web-auth:www:${process.pid}`)
 

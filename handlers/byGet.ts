@@ -2,22 +2,21 @@ import type { Request, Response } from 'express'
 
 import { authenticate } from '../helpers/authFunctions.js'
 import * as configFunctions from '../helpers/configFunctions.js'
-import type * as configTypes from '../types/configTypes'
 
-const getConfig = configFunctions.getProperty(
-  'methods.get'
-) as configTypes.MethodConfig
+const getConfig = configFunctions.getProperty('methods.get')
 
-export async function handler(
-  request: Request,
+if (getConfig === undefined) {
+  throw new Error("Missing configuration for 'methods.get'")
+}
+
+export default async function handler(
+  request: Request<unknown, unknown, unknown, Record<string, string>>,
   response: Response
 ): Promise<void> {
-  const userName = request.query[getConfig.userNameField] as string
-  const password = request.query[getConfig.passwordField] as string
+  const userName = request.query[getConfig?.userNameField ?? ''] ?? ''
+  const password = request.query[getConfig?.passwordField ?? ''] ?? ''
 
   const auth = await authenticate(userName, password)
 
   response.json(auth)
 }
-
-export default handler

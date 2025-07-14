@@ -1,3 +1,4 @@
+import type { ActiveDirectoryAuthenticateConfig, LdapClientOptions } from '@cityssm/activedirectory-authenticate';
 export interface Config {
     ports?: {
         http?: number;
@@ -8,7 +9,8 @@ export interface Config {
         headers?: false | MethodConfig;
         post?: false | MethodConfig;
     };
-    activeDirectoryConfig?: ActiveDirectoryConfig;
+    ldapClient?: LdapClientOptions;
+    activeDirectoryAuthenticate?: ActiveDirectoryAuthenticateConfig;
     allowlistIPs?: string[];
     localCache?: {
         expirySeconds?: number;
@@ -17,12 +19,6 @@ export interface Config {
     maxQueriesPerMinute?: number;
 }
 export interface MethodConfig {
-    userNameField: string;
     passwordField: string;
-}
-export interface ActiveDirectoryConfig {
-    url: string;
-    baseDN: string;
-    username: string;
-    password: string;
+    userNameField: string;
 }

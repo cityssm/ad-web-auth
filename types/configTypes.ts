@@ -1,3 +1,8 @@
+import type {
+  ActiveDirectoryAuthenticateConfig,
+  LdapClientOptions
+} from '@cityssm/activedirectory-authenticate'
+
 export interface Config {
   ports?: {
     http?: number
@@ -10,7 +15,9 @@ export interface Config {
     post?: false | MethodConfig
   }
 
-  activeDirectoryConfig?: ActiveDirectoryConfig
+  ldapClient?: LdapClientOptions
+
+  activeDirectoryAuthenticate?: ActiveDirectoryAuthenticateConfig
 
   allowlistIPs?: string[]
 
@@ -23,13 +30,6 @@ export interface Config {
 }
 
 export interface MethodConfig {
-  userNameField: string
   passwordField: string
-}
-
-export interface ActiveDirectoryConfig {
-  url: string
-  baseDN: string
-  username: string
-  password: string
+  userNameField: string
 }

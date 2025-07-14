@@ -1,19 +1,20 @@
 import * as http from 'node:http';
 import Debug from 'debug';
 import { app } from '../app.js';
+import { DEBUG_NAMESPACE } from '../debug.config.js';
 import * as configFunctions from '../helpers/configFunctions.js';
-const debug = Debug(`ad-web-auth:wwwProcess:${process.pid}`);
+const debug = Debug(`${DEBUG_NAMESPACE}:wwwProcess:${process.pid}`);
 function onError(error) {
     if (error.syscall !== 'listen') {
         throw error;
     }
     switch (error.code) {
         case 'EACCES': {
-            console.error('Requires elevated privileges');
+            debug('Requires elevated privileges');
             process.exit(1);
         }
         case 'EADDRINUSE': {
-            console.error('Port is already in use.');
+            debug('Port is already in use.');
             process.exit(1);
         }
         default: {

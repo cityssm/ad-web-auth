@@ -1,18 +1,29 @@
-import ActiveDirectory from 'activedirectory2'
+import ActiveDirectoryAuthenticate from '@cityssm/activedirectory-authenticate'
 import * as bcrypt from 'bcrypt'
-import debug from 'debug'
+import Debug from 'debug'
+import exitHook from 'exit-hook'
 import NodeCache from 'node-cache'
+
+import { DEBUG_NAMESPACE } from '../debug.config.js'
 
 import * as configFunctions from './configFunctions.js'
 
-const adConfig = configFunctions.getProperty('activeDirectoryConfig')
+const ldapConfig = configFunctions.getProperty('ldapClient')
+const authenticateConfig = configFunctions.getProperty(
+  'activeDirectoryAuthenticate'
+)
 
-const debugAuth = debug('ad-web-auth:authFunctions')
+const debug = Debug(`${DEBUG_NAMESPACE}:authFunctions`)
 
 const loginCache = new NodeCache({
   maxKeys: configFunctions.getProperty('localCache.maxSize'),
   stdTTL: configFunctions.getProperty('localCache.expirySeconds')
 })
+
+const authenticator =
+  ldapConfig === undefined || authenticateConfig === undefined
+    ? undefined
+    : new ActiveDirectoryAuthenticate(ldapConfig, authenticateConfig)
 
 export async function authenticate(
   userName: string | null | undefined,
@@ -25,42 +36,40 @@ export async function authenticate(
     password === null ||
     password === undefined ||
     password === '' ||
-    adConfig === undefined
+    ldapConfig === undefined ||
+    authenticateConfig === undefined
   ) {
     return false
   }
 
-  const cachedPassHash = loginCache.get(userName)
+  const cachedPassHash: string | undefined = loginCache.get(userName)
 
   if (cachedPassHash !== undefined) {
-    debugAuth('Cached record found')
+    debug('Cached record found')
     try {
-      return await bcrypt.compare(password, cachedPassHash as string)
+      return await bcrypt.compare(password, cachedPassHash)
     } catch (error) {
-      console.log(error)
+      debug(error)
       return false
     }
   }
   const passHash = await bcrypt.hash(password, 10)
 
-  // eslint-disable-next-line promise/avoid-new
-  return await new Promise((resolve) => {
-    try {
-      const ad = new ActiveDirectory(adConfig)
+  const result = await authenticator?.authenticate(userName, password)
 
-      ad.authenticate(userName, password, (error, auth) => {
-        if (error) {
-          resolve(false)
-        }
+  const success = result?.success ?? false
 
-        if (auth) {
-          loginCache.set(userName, passHash)
-        }
+  if (success) {
+    loginCache.set(userName, passHash)
+  } else {
+    debug('Authentication failed:', result)
+  }
 
-        resolve(auth)
-      })
-    } catch {
-      resolve(false)
-    }
-  })
+  return success
 }
+
+exitHook(() => {
+  debug('Clearing caches')
+  loginCache.flushAll()
+  authenticator?.clearCache()
+})

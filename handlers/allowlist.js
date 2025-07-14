@@ -1,8 +1,9 @@
 import { isLocal } from '@cityssm/is-private-network-address';
 import Debug from 'debug';
+import { DEBUG_NAMESPACE } from '../debug.config.js';
 import * as configFunctions from '../helpers/configFunctions.js';
-const debug = Debug('ad-web-auth:allowlist');
-export const handler = (request, response, next) => {
+const debug = Debug(`${DEBUG_NAMESPACE}:allowlist`);
+export default function handler(request, response, next) {
     const ipAddress = request.ip?.split(':').pop() ?? '';
     debug(`Testing IP: ${ipAddress}`);
     if (isLocal(request.ip ?? '') ||
@@ -10,7 +11,5 @@ export const handler = (request, response, next) => {
         next();
         return;
     }
-    response.status(403);
-    response.json(false);
-};
-export default handler;
+    response.status(403).json(false);
+}
