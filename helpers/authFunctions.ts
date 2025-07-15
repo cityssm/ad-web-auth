@@ -1,8 +1,8 @@
+import { NodeCache } from '@cacheable/node-cache'
 import ActiveDirectoryAuthenticate from '@cityssm/activedirectory-authenticate'
 import * as bcrypt from 'bcrypt'
 import Debug from 'debug'
 import exitHook from 'exit-hook'
-import NodeCache from 'node-cache'
 
 import { DEBUG_NAMESPACE } from '../debug.config.js'
 
