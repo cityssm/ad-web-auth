@@ -1,5 +1,7 @@
 import { NodeCache } from '@cacheable/node-cache'
-import ActiveDirectoryAuthenticate from '@cityssm/activedirectory-authenticate'
+import ActiveDirectoryAuthenticate, {
+  type ActiveDirectoryAuthenticateResult
+} from '@cityssm/activedirectory-authenticate'
 import * as bcrypt from 'bcrypt'
 import Debug from 'debug'
 import exitHook from 'exit-hook'
@@ -28,18 +30,24 @@ const authenticator =
 export async function authenticate(
   userName: string | null | undefined,
   password: string | null | undefined
-): Promise<boolean> {
-  if (
+): Promise<Partial<ActiveDirectoryAuthenticateResult & { success: boolean }>> {
+  if (ldapConfig === undefined || authenticateConfig === undefined || authenticator === undefined) {
+    return {
+      success: false,
+      errorType: 'CONFIGURATION_ERROR'
+    }
+  } else if (
     userName === null ||
     userName === undefined ||
     userName === '' ||
     password === null ||
     password === undefined ||
-    password === '' ||
-    ldapConfig === undefined ||
-    authenticateConfig === undefined
+    password === ''
   ) {
-    return false
+    return {
+      success: false,
+      errorType: (userName ?? '') === '' ? 'EMPTY_USER_NAME' : 'EMPTY_PASSWORD'
+    }
   }
 
   const cachedPassHash: string | undefined = loginCache.get(userName)
@@ -47,25 +55,36 @@ export async function authenticate(
   if (cachedPassHash !== undefined) {
     debug('Cached record found')
     try {
-      return await bcrypt.compare(password, cachedPassHash)
+      const passwordMatch = await bcrypt.compare(password, cachedPassHash)
+
+      if (passwordMatch) {
+        debug('Password matches cached hash')
+
+        return {
+          success: true
+        }
+      }
     } catch (error) {
       debug(error)
-      return false
+      return {
+        success: false,
+
+        bindUserDN: '',
+        errorType: 'LOGON_FAILURE'
+      }
     }
   }
   const passHash = await bcrypt.hash(password, 10)
 
-  const result = await authenticator?.authenticate(userName, password)
+  const result = await authenticator.authenticate(userName, password)
 
-  const success = result?.success ?? false
-
-  if (success) {
+  if (result.success) {
     loginCache.set(userName, passHash)
   } else {
     debug('Authentication failed:', result)
   }
 
-  return success
+  return result
 }
 
 exitHook(() => {

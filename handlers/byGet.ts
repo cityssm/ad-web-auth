@@ -18,5 +18,5 @@ export default async function handler(
 
   const auth = await authenticate(userName, password)
 
-  response.json(auth)
+  response.json(request.query.debug === 'true' ? auth : auth.success)
 }

@@ -8,5 +8,5 @@ export default async function handler(request, response) {
     const userName = request.header(headersConfig?.userNameField ?? '') ?? '';
     const password = request.header(headersConfig?.passwordField ?? '') ?? '';
     const auth = await authenticate.authenticate(userName, password);
-    response.json(auth);
+    response.json(request.query.debug === 'true' ? auth : auth.success);
 }

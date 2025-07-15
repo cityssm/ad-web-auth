@@ -16,37 +16,53 @@ const authenticator = ldapConfig === undefined || authenticateConfig === undefin
     ? undefined
     : new ActiveDirectoryAuthenticate(ldapConfig, authenticateConfig);
 export async function authenticate(userName, password) {
-    if (userName === null ||
+    if (ldapConfig === undefined || authenticateConfig === undefined || authenticator === undefined) {
+        return {
+            success: false,
+            errorType: 'CONFIGURATION_ERROR'
+        };
+    }
+    else if (userName === null ||
         userName === undefined ||
         userName === '' ||
         password === null ||
         password === undefined ||
-        password === '' ||
-        ldapConfig === undefined ||
-        authenticateConfig === undefined) {
-        return false;
+        password === '') {
+        return {
+            success: false,
+            errorType: (userName ?? '') === '' ? 'EMPTY_USER_NAME' : 'EMPTY_PASSWORD'
+        };
     }
     const cachedPassHash = loginCache.get(userName);
     if (cachedPassHash !== undefined) {
         debug('Cached record found');
         try {
-            return await bcrypt.compare(password, cachedPassHash);
+            const passwordMatch = await bcrypt.compare(password, cachedPassHash);
+            if (passwordMatch) {
+                debug('Password matches cached hash');
+                return {
+                    success: true
+                };
+            }
         }
         catch (error) {
             debug(error);
-            return false;
+            return {
+                success: false,
+                bindUserDN: '',
+                errorType: 'LOGON_FAILURE'
+            };
         }
     }
     const passHash = await bcrypt.hash(password, 10);
-    const result = await authenticator?.authenticate(userName, password);
-    const success = result?.success ?? false;
-    if (success) {
+    const result = await authenticator.authenticate(userName, password);
+    if (result.success) {
         loginCache.set(userName, passHash);
     }
     else {
         debug('Authentication failed:', result);
     }
-    return success;
+    return result;
 }
 exitHook(() => {
     debug('Clearing caches');

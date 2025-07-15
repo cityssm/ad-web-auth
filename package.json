@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@cacheable/node-cache": "^1.5.8",
-    "@cityssm/activedirectory-authenticate": "^1.0.0",
+    "@cityssm/activedirectory-authenticate": "^1.0.1",
     "@cityssm/configurator": "^0.1.0",
     "@cityssm/is-private-network-address": "^1.0.0",
     "@cityssm/to-millis": "^1.0.0",
@@ -39,7 +39,7 @@
     "@types/debug": "^4.1.12",
     "@types/express": "^5.0.3",
     "@types/http-errors": "^2.0.5",
-    "@types/node": "^24.0.13",
+    "@types/node": "^24.0.14",
     "@types/node-windows": "^0.1.6",
     "eslint-config-cityssm": "^26.0.0",
     "nodemon": "^3.1.10",
