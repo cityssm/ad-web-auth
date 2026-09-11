@@ -1,7 +1,8 @@
 {
   "name": "ad-web-auth",
   "version": "0.2.0",
-  "description": "",
+  "private": true,
+  "description": "A web application to authenticate Active Directory users.",
   "homepage": "https://github.com/cityssm/ad-web-auth#readme",
   "bugs": {
     "url": "https://github.com/cityssm/ad-web-auth/issues"
@@ -13,42 +14,47 @@
   "license": "MIT",
   "author": "Corporation of the City of Sault Ste. Marie",
   "type": "module",
-  "exports": "./app.js",
+  "exports": {
+    ".": "./app.js"
+  },
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon ./bin/www",
     "start": "cross-env NODE_ENV=production node ./bin/www"
   },
   "dependencies": {
-    "@cacheable/node-cache": "^1.5.8",
-    "@cityssm/activedirectory-authenticate": "^1.0.1",
-    "@cityssm/configurator": "^0.1.0",
+    "@cacheable/node-cache": "^3.1.1",
+    "@cityssm/activedirectory-authenticate": "^2.0.0",
+    "@cityssm/configurator": "^0.2.0",
     "@cityssm/is-private-network-address": "^1.0.0",
-    "@cityssm/to-millis": "^1.0.0",
+    "@cityssm/to-millis": "^1.0.1",
     "bcrypt": "^6.0.0",
-    "compression": "^1.8.0",
-    "cross-env": "^7.0.3",
-    "debug": "^4.4.1",
-    "exit-hook": "^4.0.0",
-    "express": "^5.1.0",
-    "express-rate-limit": "^7.5.1",
-    "http-errors": "^2.0.0"
+    "compression": "^1.8.2",
+    "cross-env": "^10.1.0",
+    "debug": "^4.4.3",
+    "exit-hook": "^5.1.0",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.7.0",
+    "http-errors": "^2.0.1"
   },
   "devDependencies": {
-    "@types/bcrypt": "^5.0.2",
+    "@types/bcrypt": "^6.0.0",
     "@types/compression": "^1.8.1",
-    "@types/debug": "^4.1.12",
-    "@types/express": "^5.0.3",
+    "@types/debug": "^4.1.13",
+    "@types/express": "^5.0.6",
     "@types/http-errors": "^2.0.5",
     "@types/node": "^24.0.14",
     "@types/node-windows": "^0.1.6",
-    "eslint-config-cityssm": "^26.0.0",
-    "nodemon": "^3.1.10",
-    "prettier-config-cityssm": "^1.0.0"
+    "eslint-config-cityssm": "^51.0.0",
+    "nodemon": "^3.1.14",
+    "prettier-config-cityssm": "^2.2.0"
   },
   "optionalDependencies": {
     "node-windows": "^1.0.0-beta.8"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=22.0.0"
+  },
+  "allowScripts": {
+    "bcrypt@6.0.0": true
   }
 }

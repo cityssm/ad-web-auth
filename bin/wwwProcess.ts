@@ -1,11 +1,10 @@
-// eslint-disable-next-line @eslint-community/eslint-comments/disable-enable-pair
 /* eslint-disable unicorn/no-process-exit */
 
 import * as http from 'node:http'
 
 import Debug from 'debug'
 
-import { app } from '../app.js'
+import getApp from '../app.js'
 import { DEBUG_NAMESPACE } from '../debug.config.js'
 import * as configFunctions from '../helpers/configFunctions.js'
 
@@ -50,12 +49,13 @@ function onError(error: ServerError): void {
 const httpPort = configFunctions.getProperty('ports.http')
 
 if (httpPort !== undefined) {
-  const httpServer = http.createServer(app)
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises, @typescript-eslint/strict-void-return
+  const httpServer = http.createServer(getApp())
 
   httpServer.listen(httpPort)
 
   httpServer.on('error', onError)
-  httpServer.on('listening', function () {
+  httpServer.on('listening', () => {
     debug(`HTTP listening on ${httpPort.toString()}`)
   })
 }

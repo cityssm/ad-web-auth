@@ -1,2 +1,2 @@
-export declare const router: import("express-serve-static-core").Router;
-export default router;
+import { Router } from 'express';
+export default function getRouter(): Router;

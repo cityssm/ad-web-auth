@@ -6,7 +6,6 @@ import type {
 export interface Config {
   ports?: {
     http?: number
-    https?: number
   }
 
   methods?: {
@@ -15,7 +14,7 @@ export interface Config {
     post?: false | MethodConfig
   }
 
-  ldapClient?: LdapClientOptions
+  ldapClient: LdapClientOptions | LdapClientOptions[]
 
   activeDirectoryAuthenticate?: ActiveDirectoryAuthenticateConfig
 

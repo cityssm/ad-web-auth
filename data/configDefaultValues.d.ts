@@ -2,12 +2,11 @@ import type { ActiveDirectoryAuthenticateConfig, LdapClientOptions } from '@city
 import type { MethodConfig } from '../types/configTypes.js';
 export declare const configDefaultValues: {
     'ports.http': number | undefined;
-    'ports.https': number | undefined;
     'methods.get': MethodConfig | undefined;
     'methods.headers': MethodConfig | undefined;
     'methods.post': MethodConfig | undefined;
     activeDirectoryAuthenticate: ActiveDirectoryAuthenticateConfig | undefined;
-    ldapClient: LdapClientOptions | undefined;
+    ldapClient: LdapClientOptions | LdapClientOptions[];
     allowlistIPs: string[];
     maxQueriesPerMinute: number;
     'localCache.expirySeconds': number;

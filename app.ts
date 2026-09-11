@@ -15,43 +15,36 @@ const debug = Debug(`${DEBUG_NAMESPACE}:app`)
  * INITIALIZE APP
  */
 
-export const app = express()
+export default function getApp(): express.Express {
+  const app = express()
 
-app.disable('X-Powered-By')
+  app.disable('X-Powered-By')
 
-app.use((request, _response, next) => {
-  debug(`${request.method} ${request.url}`)
-  next()
-})
-
-app.use(express.json())
-
-app.use(
-  express.urlencoded({
-    extended: false
+  app.use((request, _response, next) => {
+    debug(`${request.method} ${request.url}`)
+    next()
   })
-)
 
-/*
- * RATE LIMITING
- */
+  app.use(express.json())
 
-const limiter = rateLimit({
-  max: configFunctions.getProperty('maxQueriesPerMinute'),
-  windowMs: minutesToMillis(1)
-})
+  app.use(
+    express.urlencoded({
+      extended: false
+    })
+  )
 
-app.use(limiter)
+  const limiter = rateLimit({
+    max: configFunctions.getProperty('maxQueriesPerMinute'),
+    windowMs: minutesToMillis(1)
+  })
 
-/*
- * ROUTES
- */
+  app.use(limiter)
 
-app.use('/auth', handlerAllow, routerAuth)
+  app.use('/auth', handlerAllow, routerAuth())
 
-// Catch 404 and forward to error handler
-app.use((_request, _response, next) => {
-  next(createError(404))
-})
+  app.use((_request, _response, next) => {
+    next(createError(404))
+  })
 
-export default app
+  return app
+}

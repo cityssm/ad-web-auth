@@ -2,14 +2,13 @@ import type { ActiveDirectoryAuthenticateConfig, LdapClientOptions } from '@city
 export interface Config {
     ports?: {
         http?: number;
-        https?: number;
     };
     methods?: {
         get?: false | MethodConfig;
         headers?: false | MethodConfig;
         post?: false | MethodConfig;
     };
-    ldapClient?: LdapClientOptions;
+    ldapClient: LdapClientOptions | LdapClientOptions[];
     activeDirectoryAuthenticate?: ActiveDirectoryAuthenticateConfig;
     allowlistIPs?: string[];
     localCache?: {

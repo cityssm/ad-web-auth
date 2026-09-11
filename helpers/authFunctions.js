@@ -5,40 +5,42 @@ import Debug from 'debug';
 import exitHook from 'exit-hook';
 import { DEBUG_NAMESPACE } from '../debug.config.js';
 import * as configFunctions from './configFunctions.js';
-const ldapConfig = configFunctions.getProperty('ldapClient');
+const ldapConfigArray = Array.isArray(configFunctions.getProperty('ldapClient'))
+    ? configFunctions.getProperty('ldapClient')
+    : [configFunctions.getProperty('ldapClient')];
 const authenticateConfig = configFunctions.getProperty('activeDirectoryAuthenticate');
 const debug = Debug(`${DEBUG_NAMESPACE}:authFunctions`);
 const loginCache = new NodeCache({
     maxKeys: configFunctions.getProperty('localCache.maxSize'),
     stdTTL: configFunctions.getProperty('localCache.expirySeconds')
 });
-const authenticator = ldapConfig === undefined || authenticateConfig === undefined
-    ? undefined
-    : new ActiveDirectoryAuthenticate(ldapConfig, authenticateConfig);
-export async function authenticate(userName, password) {
-    if (ldapConfig === undefined || authenticateConfig === undefined || authenticator === undefined) {
+const authenticators = authenticateConfig === undefined
+    ? []
+    : Array.from(ldapConfigArray, (ldapConfigItem) => new ActiveDirectoryAuthenticate(ldapConfigItem, authenticateConfig));
+export async function authenticate(username, password) {
+    if (authenticators.length === 0) {
         return {
             success: false,
             errorType: 'CONFIGURATION_ERROR'
         };
     }
-    else if (userName === null ||
-        userName === undefined ||
-        userName === '' ||
+    if (username === null ||
+        username === undefined ||
+        username === '' ||
         password === null ||
         password === undefined ||
         password === '') {
         return {
             success: false,
-            errorType: (userName ?? '') === '' ? 'EMPTY_USER_NAME' : 'EMPTY_PASSWORD'
+            errorType: (username ?? '') === '' ? 'EMPTY_USER_NAME' : 'EMPTY_PASSWORD'
         };
     }
-    const cachedPassHash = loginCache.get(userName);
+    const cachedPassHash = loginCache.get(username);
     if (cachedPassHash !== undefined) {
         debug('Cached record found');
         try {
-            const passwordMatch = await bcrypt.compare(password, cachedPassHash);
-            if (passwordMatch) {
+            const isPasswordMatched = await bcrypt.compare(password, cachedPassHash);
+            if (isPasswordMatched) {
                 debug('Password matches cached hash');
                 return {
                     success: true
@@ -55,17 +57,29 @@ export async function authenticate(userName, password) {
         }
     }
     const passHash = await bcrypt.hash(password, 10);
-    const result = await authenticator.authenticate(userName, password);
-    if (result.success) {
-        loginCache.set(userName, passHash);
+    for (const [authenticatorIndex, authenticator] of authenticators.entries()) {
+        const result = await authenticator.authenticate(username, password);
+        if (result.success) {
+            loginCache.set(username, passHash);
+        }
+        else if (result.errorType === 'LDAP_SEARCH_FAILED' &&
+            authenticatorIndex < authenticators.length - 1) {
+            continue;
+        }
+        if (!result.success) {
+            debug('Authentication failed:', result);
+        }
+        return result;
     }
-    else {
-        debug('Authentication failed:', result);
-    }
-    return result;
+    return {
+        success: false,
+        errorType: 'CONFIGURATION_ERROR'
+    };
 }
 exitHook(() => {
     debug('Clearing caches');
     loginCache.flushAll();
-    authenticator?.clearCache();
+    for (const authenticator of authenticators) {
+        authenticator.clearCache();
+    }
 });

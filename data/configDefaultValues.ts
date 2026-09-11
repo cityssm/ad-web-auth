@@ -8,7 +8,6 @@ import type { MethodConfig } from '../types/configTypes.js'
 
 export const configDefaultValues = {
   'ports.http': undefined as number | undefined,
-  'ports.https': 46_466 as number | undefined,
 
   'methods.get': undefined as MethodConfig | undefined,
   'methods.headers': undefined as MethodConfig | undefined,
@@ -17,7 +16,8 @@ export const configDefaultValues = {
   activeDirectoryAuthenticate: undefined as
     | ActiveDirectoryAuthenticateConfig
     | undefined,
-  ldapClient: undefined as LdapClientOptions | undefined,
+
+  ldapClient: [] as LdapClientOptions | LdapClientOptions[],
 
   allowlistIPs: [] as string[],
   maxQueriesPerMinute: 500,

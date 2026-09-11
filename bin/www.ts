@@ -24,7 +24,7 @@ debug(`Primary title: ${process.title}`)
 debug(`Launching ${processCount} processes`)
 
 const clusterSettings = {
-  exec: directoryName + '/wwwProcess.js'
+  exec: `${directoryName}/wwwProcess.js`
 }
 
 cluster.setupPrimary(clusterSettings)
