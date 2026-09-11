@@ -1,6 +1,6 @@
 {
   "name": "ad-web-auth",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "description": "A web application to authenticate Active Directory users.",
   "homepage": "https://github.com/cityssm/ad-web-auth#readme",
