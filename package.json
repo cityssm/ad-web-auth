@@ -42,7 +42,7 @@
     "@types/debug": "^4.1.13",
     "@types/express": "^5.0.6",
     "@types/http-errors": "^2.0.5",
-    "@types/node": "^24.0.14",
+    "@types/node": "^26.5.1",
     "@types/node-windows": "^0.1.6",
     "eslint-config-cityssm": "^51.0.0",
     "nodemon": "^3.1.14",
