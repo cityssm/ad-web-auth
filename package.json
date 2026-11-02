@@ -33,7 +33,7 @@
     "debug": "^4.4.3",
     "exit-hook": "^5.1.0",
     "express": "^5.2.1",
-    "express-rate-limit": "^8.7.0",
+    "express-rate-limit": "^8.7.2",
     "http-errors": "^2.0.1"
   },
   "devDependencies": {
